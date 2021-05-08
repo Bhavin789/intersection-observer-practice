@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import logo from "./logo.svg";
+import { useRef } from "react";
 import "./App.css";
 
-function App() {
-  const [isVisible, setIsVisible] = useState(false);
+import useObserver from "./useObserver";
 
+function App() {
   const targetRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef(null);
 
@@ -14,21 +13,7 @@ function App() {
     threshold: 0.5,
   };
 
-  const observer = new IntersectionObserver((entries: any) => {
-    const [entry] = entries;
-    setIsVisible(entry.isIntersecting);
-  }, options);
-
-  useEffect(() => {
-    if (targetRef.current) {
-      observer.observe(targetRef.current);
-    }
-    return () => {
-      if (targetRef.current) {
-        observer.unobserve(targetRef.current);
-      }
-    };
-  }, [observer]);
+  const { isVisible } = useObserver({ targetRef, options });
 
   return (
     <div className="root" ref={rootRef}>
